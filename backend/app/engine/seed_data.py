@@ -1,0 +1,464 @@
+"""
+Seed Data Generator for SIH16122.
+Generates realistic Primavera/MS Project WBS L5/L6 baseline activities
+across Civil, Piping, Electrical, Instrumentation, and HSE disciplines,
+plus sample multilingual supervisor reports.
+"""
+
+from typing import List, Dict, Any
+
+SEED_WBS_ACTIVITIES = [
+    # Civil Discipline (Area 10 & Power Block)
+    {
+        "code": "CIV-1001",
+        "name": "Site Clearing and Grubbing for Area 10",
+        "discipline": "Civil",
+        "wbs_level": 5,
+        "parent_code": "WBS-CIV-01",
+        "planned_start": "2026-08-01",
+        "planned_end": "2026-08-07",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "m2",
+        "planned_qty": 5000.0,
+        "installed_qty": 5000.0
+    },
+    {
+        "code": "CIV-1021",
+        "name": "Excavate Foundation Trench for Substation Yard",
+        "discipline": "Civil",
+        "wbs_level": 5,
+        "parent_code": "WBS-CIV-01",
+        "planned_start": "2026-08-08",
+        "planned_end": "2026-08-16",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "m3",
+        "planned_qty": 1200.0,
+        "installed_qty": 1200.0
+    },
+    {
+        "code": "CIV-1035",
+        "name": "Erect Formwork and Rebar for Turbine Generator Mat Foundation",
+        "discipline": "Civil",
+        "wbs_level": 6,
+        "parent_code": "WBS-CIV-02",
+        "planned_start": "2026-08-15",
+        "planned_end": "2026-08-25",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "tonnes",
+        "planned_qty": 85.0,
+        "installed_qty": 85.0
+    },
+    {
+        "code": "CIV-1042",
+        "name": "Pour Mass Concrete for Turbine Generator Pedestal Slab",
+        "discipline": "Civil",
+        "wbs_level": 6,
+        "parent_code": "WBS-CIV-02",
+        "planned_start": "2026-08-28",
+        "planned_end": "2026-09-02",
+        "progress_percent": 50.0,
+        "status": "IN_PROGRESS",
+        "unit": "m3",
+        "planned_qty": 450.0,
+        "installed_qty": 225.0
+    },
+    {
+        "code": "CIV-1050",
+        "name": "Backfilling and Compaction around Transformer Yard Pad",
+        "discipline": "Civil",
+        "wbs_level": 5,
+        "parent_code": "WBS-CIV-01",
+        "planned_start": "2026-09-03",
+        "planned_end": "2026-09-09",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "m3",
+        "planned_qty": 800.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "CIV-1065",
+        "name": "Grout Baseplates for Steam Turbine Skids",
+        "discipline": "Civil",
+        "wbs_level": 6,
+        "parent_code": "WBS-CIV-02",
+        "planned_start": "2026-09-10",
+        "planned_end": "2026-09-14",
+        "progress_percent": 30.0,
+        "status": "IN_PROGRESS",
+        "unit": "m2",
+        "planned_qty": 40.0,
+        "installed_qty": 12.0
+    },
+    {
+        "code": "CIV-1080",
+        "name": "Construct Perimeter Drainage Trench and Manholes",
+        "discipline": "Civil",
+        "wbs_level": 5,
+        "parent_code": "WBS-CIV-03",
+        "planned_start": "2026-09-12",
+        "planned_end": "2026-09-20",
+        "progress_percent": 40.0,
+        "status": "IN_PROGRESS",
+        "unit": "meters",
+        "planned_qty": 250.0,
+        "installed_qty": 100.0
+    },
+
+    # Piping Discipline (Cooling Water, Firewater, High Pressure Steam)
+    {
+        "code": "PIP-2010",
+        "name": "Excavate Underground Trench for Firewater Header FW-01",
+        "discipline": "Piping",
+        "wbs_level": 5,
+        "parent_code": "WBS-PIP-01",
+        "planned_start": "2026-08-10",
+        "planned_end": "2026-08-18",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "meters",
+        "planned_qty": 320.0,
+        "installed_qty": 320.0
+    },
+    {
+        "code": "PIP-2105",
+        "name": "Fit-up and Weld Underground Firewater Carbon Steel Line",
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-01",
+        "planned_start": "2026-08-20",
+        "planned_end": "2026-08-30",
+        "progress_percent": 60.0,
+        "status": "IN_PROGRESS",
+        "unit": "joints",
+        "planned_qty": 110.0,
+        "installed_qty": 66.0
+    },
+    {
+        "code": "PIP-2200",
+        "name": "Hydrostatic Pressure Test of Underground Firewater Header",
+        "discipline": "Piping",
+        "wbs_level": 5,
+        "parent_code": "WBS-PIP-01",
+        "planned_start": "2026-09-01",
+        "planned_end": "2026-09-05",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "test",
+        "planned_qty": 1.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "PIP-2451",
+        "name": 'Erect Line 24"-CW-001 Spool Segments on Pipe Rack B',
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-02",
+        "planned_start": "2026-09-02",
+        "planned_end": "2026-09-12",
+        "progress_percent": 25.0,
+        "status": "IN_PROGRESS",
+        "unit": "spools",
+        "planned_qty": 18.0,
+        "installed_qty": 4.5
+    },
+    {
+        "code": "PIP-2460",
+        "name": 'Field Butt Welding of 24 Inch Cooling Water Header Joints',
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-02",
+        "planned_start": "2026-09-10",
+        "planned_end": "2026-09-18",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "joints",
+        "planned_qty": 24.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "PIP-2475",
+        "name": 'Radiographic NDT Inspection of Cooling Water Welds',
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-02",
+        "planned_start": "2026-09-18",
+        "planned_end": "2026-09-22",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "joints",
+        "planned_qty": 24.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "PIP-2510",
+        "name": 'Install Boiler Feedwater High Pressure Bypass Line 8"-BFW-102',
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-03",
+        "planned_start": "2026-09-05",
+        "planned_end": "2026-09-15",
+        "progress_percent": 40.0,
+        "status": "IN_PROGRESS",
+        "unit": "meters",
+        "planned_qty": 140.0,
+        "installed_qty": 56.0
+    },
+    {
+        "code": "PIP-2530",
+        "name": "Flange Alignment and Bolt Torquing for BFW Pumps",
+        "discipline": "Piping",
+        "wbs_level": 6,
+        "parent_code": "WBS-PIP-03",
+        "planned_start": "2026-09-14",
+        "planned_end": "2026-09-19",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "flanges",
+        "planned_qty": 16.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "PIP-2600",
+        "name": "Apply Exterior Thermal Insulation and Jacketing on Steam Line",
+        "discipline": "Piping",
+        "wbs_level": 5,
+        "parent_code": "WBS-PIP-03",
+        "planned_start": "2026-09-20",
+        "planned_end": "2026-09-28",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "meters",
+        "planned_qty": 200.0,
+        "installed_qty": 0.0
+    },
+
+    # Electrical Discipline (Medium & Low Voltage, Substation)
+    {
+        "code": "ELE-3010",
+        "name": "Install Overhead Cable Tray Ladder on Main Utility Pipe Rack",
+        "discipline": "Electrical",
+        "wbs_level": 5,
+        "parent_code": "WBS-ELE-01",
+        "planned_start": "2026-08-18",
+        "planned_end": "2026-08-28",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "meters",
+        "planned_qty": 450.0,
+        "installed_qty": 450.0
+    },
+    {
+        "code": "ELE-3104",
+        "name": "Pull 11kV Medium Voltage Feeder Cable to SWGR-01",
+        "discipline": "Electrical",
+        "wbs_level": 6,
+        "parent_code": "WBS-ELE-01",
+        "planned_start": "2026-09-01",
+        "planned_end": "2026-09-10",
+        "progress_percent": 70.0,
+        "status": "IN_PROGRESS",
+        "unit": "meters",
+        "planned_qty": 850.0,
+        "installed_qty": 595.0
+    },
+    {
+        "code": "ELE-3120",
+        "name": "Install 415V Low Voltage Motor Control Center MCC-02",
+        "discipline": "Electrical",
+        "wbs_level": 5,
+        "parent_code": "WBS-ELE-02",
+        "planned_start": "2026-09-04",
+        "planned_end": "2026-09-12",
+        "progress_percent": 50.0,
+        "status": "IN_PROGRESS",
+        "unit": "panels",
+        "planned_qty": 8.0,
+        "installed_qty": 4.0
+    },
+    {
+        "code": "ELE-3150",
+        "name": "Terminate MV Cable Glands and Lugs in Switchgear SWGR-01",
+        "discipline": "Electrical",
+        "wbs_level": 6,
+        "parent_code": "WBS-ELE-01",
+        "planned_start": "2026-09-11",
+        "planned_end": "2026-09-16",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "terminations",
+        "planned_qty": 36.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "ELE-3205",
+        "name": "Megger Insulation Resistance Testing for 11kV Feeder Loop",
+        "discipline": "Electrical",
+        "wbs_level": 6,
+        "parent_code": "WBS-ELE-01",
+        "planned_start": "2026-09-16",
+        "planned_end": "2026-09-19",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "loops",
+        "planned_qty": 4.0,
+        "installed_qty": 0.0
+    },
+    {
+        "code": "ELE-3250",
+        "name": "Dress and Mount 33kV Step-up Transformer Bushings",
+        "discipline": "Electrical",
+        "wbs_level": 6,
+        "parent_code": "WBS-ELE-03",
+        "planned_start": "2026-09-08",
+        "planned_end": "2026-09-15",
+        "progress_percent": 35.0,
+        "status": "IN_PROGRESS",
+        "unit": "bushings",
+        "planned_qty": 6.0,
+        "installed_qty": 2.1
+    },
+    {
+        "code": "ELE-3300",
+        "name": "Install Grounding Grid Copper Tape across Substation Yard",
+        "discipline": "Electrical",
+        "wbs_level": 5,
+        "parent_code": "WBS-ELE-03",
+        "planned_start": "2026-08-25",
+        "planned_end": "2026-09-05",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "meters",
+        "planned_qty": 600.0,
+        "installed_qty": 600.0
+    },
+
+    # Instrumentation Discipline
+    {
+        "code": "INS-4010",
+        "name": "Mount Field Junction Boxes JB-101 and JB-102 in Area 20",
+        "discipline": "Instrumentation",
+        "wbs_level": 5,
+        "parent_code": "WBS-INS-01",
+        "planned_start": "2026-09-06",
+        "planned_end": "2026-09-12",
+        "progress_percent": 80.0,
+        "status": "IN_PROGRESS",
+        "unit": "boxes",
+        "planned_qty": 6.0,
+        "installed_qty": 4.8
+    },
+    {
+        "code": "INS-4050",
+        "name": "Run 1/2 Inch Stainless Steel Impulse Tubing to Pressure Transmitters",
+        "discipline": "Instrumentation",
+        "wbs_level": 6,
+        "parent_code": "WBS-INS-01",
+        "planned_start": "2026-09-12",
+        "planned_end": "2026-09-18",
+        "progress_percent": 15.0,
+        "status": "IN_PROGRESS",
+        "unit": "meters",
+        "planned_qty": 180.0,
+        "installed_qty": 27.0
+    },
+    {
+        "code": "INS-4100",
+        "name": "Calibrate Pressure and Differential Flow Transmitters on CW Header",
+        "discipline": "Instrumentation",
+        "wbs_level": 6,
+        "parent_code": "WBS-INS-02",
+        "planned_start": "2026-09-16",
+        "planned_end": "2026-09-22",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "instruments",
+        "planned_qty": 12.0,
+        "installed_qty": 0.0
+    },
+
+    # HSE Discipline
+    {
+        "code": "HSE-5001",
+        "name": "Install Safety Barriers and Confined Space Signage at Trench Area",
+        "discipline": "HSE",
+        "wbs_level": 5,
+        "parent_code": "WBS-HSE-01",
+        "planned_start": "2026-08-05",
+        "planned_end": "2026-08-08",
+        "progress_percent": 100.0,
+        "status": "COMPLETED",
+        "unit": "locations",
+        "planned_qty": 10.0,
+        "installed_qty": 10.0
+    },
+    {
+        "code": "HSE-5020",
+        "name": "Pre-Commissioning Gas Detection and Hazard Audit",
+        "discipline": "HSE",
+        "wbs_level": 5,
+        "parent_code": "WBS-HSE-01",
+        "planned_start": "2026-09-25",
+        "planned_end": "2026-09-28",
+        "progress_percent": 0.0,
+        "status": "NOT_STARTED",
+        "unit": "audit",
+        "planned_qty": 1.0,
+        "installed_qty": 0.0
+    }
+]
+
+# 8 Realistic Demo Field Reports
+SAMPLE_DEMO_REPORTS = [
+    {
+        "reporter_name": "Rao (Piping Lead)",
+        "language": "Telugu",
+        "raw_text": '24 inch spool erection aipoyindi',
+        "photo_url": "/uploads/spool_erection.jpg"
+    },
+    {
+        "reporter_name": "Vikram (Civil Supervisor)",
+        "language": "Hindi / Hinglish",
+        "raw_text": 'Turbine pedestal concrete pouring 80% ho gaya',
+        "photo_url": "/uploads/concrete_pedestal.jpg"
+    },
+    {
+        "reporter_name": "Deepak (Electrical Foreman)",
+        "language": "English",
+        "raw_text": 'Pulling 11kV cable to SWGR-01 finished today',
+        "photo_url": "/uploads/cable_pulling.jpg"
+    },
+    {
+        "reporter_name": "Murugan (Civil Lead)",
+        "language": "Tamil / English",
+        "raw_text": 'Perimeter drainage trench 50m excavation mudichachu near yard',
+        "photo_url": "/uploads/drainage_trench.jpg"
+    },
+    {
+        "reporter_name": "Rajesh (Site Supervisor)",
+        "language": "Site Slang",
+        "raw_text": 'Mud poured on transformer yard pad area',
+        "photo_url": "/uploads/transformer_pad.jpg"
+    },
+    {
+        "reporter_name": "Suresh (Instrumentation Tech)",
+        "language": "Technical Slang",
+        "raw_text": 'JB-101 box mounting done, cable glanding pending in Area 20',
+        "photo_url": "/uploads/junction_box.jpg"
+    },
+    {
+        "reporter_name": "Kalyan (QC Inspector)",
+        "language": "Telugu / English",
+        "raw_text": 'Line 24 butt weld radiographic NDT testing aipoyindi',
+        "photo_url": "/uploads/ndt_testing.jpg"
+    },
+    {
+        "reporter_name": "Amit (Field Engineer)",
+        "language": "Ambiguous / Informal",
+        "raw_text": 'Pipe work started today in block 2',
+        "photo_url": "/uploads/pipe_work.jpg"
+    }
+]
