@@ -4,7 +4,7 @@ from .config import DB_PATH
 
 def get_db_connection() -> sqlite3.Connection:
     """Returns a direct SQLite connection with row factory and WAL mode."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA journal_mode = WAL")
@@ -29,6 +29,7 @@ def init_db():
         code TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL,
         discipline TEXT NOT NULL,
+        location TEXT,
         wbs_level INTEGER NOT NULL DEFAULT 5,
         parent_code TEXT,
         planned_start TEXT,
@@ -49,6 +50,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         reporter_name TEXT,
         language TEXT DEFAULT 'English',
+        location TEXT,
         raw_text TEXT NOT NULL,
         normalized_text TEXT,
         extracted_intent TEXT,
@@ -61,6 +63,16 @@ def init_db():
         FOREIGN KEY (approved_wbs_id) REFERENCES wbs_activities (id)
     );
     """)
+
+    # Backward-compatible migrations for existing databases
+    try:
+        cursor.execute("ALTER TABLE wbs_activities ADD COLUMN location TEXT")
+    except Exception:
+        pass
+    try:
+        cursor.execute("ALTER TABLE reports ADD COLUMN location TEXT")
+    except Exception:
+        pass
 
     # 3. AI Match Candidates (Top 3 per report)
     cursor.execute("""

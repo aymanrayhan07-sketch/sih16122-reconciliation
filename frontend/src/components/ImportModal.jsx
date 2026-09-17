@@ -38,10 +38,10 @@ export default function ImportModal({ isOpen, onClose, onImportSuccess }) {
   };
 
   const downloadSampleCSV = () => {
-    const csvContent = `activity_id,activity_name,discipline,wbs_level,planned_start,planned_end,progress_percent,status\n` +
-      `CIV-3010,Pour Foundations for Water Treatment Facility,Civil,5,2026-09-01,2026-09-10,0.0,NOT_STARTED\n` +
-      `PIP-4020,Install 16 Inch Cooling Tower Riser Line,Piping,6,2026-09-05,2026-09-15,0.0,NOT_STARTED\n` +
-      `ELE-5030,Erect 33kV Substation Gantry Structure,Electrical,5,2026-09-10,2026-09-20,0.0,NOT_STARTED\n`;
+    const csvContent = `activity_id,activity_name,discipline,location,wbs_level,planned_start,planned_end,progress_percent,status\n` +
+      `CIV-3010,Pour Foundations for Water Treatment Facility,Civil,Pump House,5,2026-09-01,2026-09-10,0.0,NOT_STARTED\n` +
+      `PIP-4020,Install 16 Inch Cooling Tower Riser Line,Piping,Pipe Rack Area,6,2026-09-05,2026-09-15,0.0,NOT_STARTED\n` +
+      `ELE-5030,Erect 33kV Substation Gantry Structure,Electrical,Substation Yard,5,2026-09-10,2026-09-20,0.0,NOT_STARTED\n`;
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -72,7 +72,7 @@ export default function ImportModal({ isOpen, onClose, onImportSuccess }) {
         <div className="py-5 space-y-4">
           <p className="text-xs text-slate-400">
             Upload your project baseline schedule in CSV format with columns: <br />
-            <code className="text-[11px] text-sky-300 font-mono">activity_id, activity_name, discipline, wbs_level, planned_start, planned_end</code>
+            <code className="text-[11px] text-sky-300 font-mono">activity_id, activity_name, discipline, location (optional), wbs_level, planned_start, planned_end</code>
           </p>
 
           <div className="flex justify-end">

@@ -6,9 +6,17 @@ export async function fetchStats() {
   return res.json();
 }
 
+export async function fetchLocations() {
+  const res = await fetch(`${API_BASE}/wbs/locations`);
+  if (!res.ok) throw new Error('Failed to fetch locations');
+  const data = await res.json();
+  return Array.isArray(data) ? data : (data?.locations || []);
+}
+
 export async function fetchWBS(params = {}) {
   const query = new URLSearchParams();
   if (params.discipline && params.discipline !== 'All') query.append('discipline', params.discipline);
+  if (params.location && params.location !== 'All') query.append('location', params.location);
   if (params.status && params.status !== 'All') query.append('status', params.status);
   if (params.search) query.append('search', params.search);
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Send, Camera, Sparkles, CheckCircle2, AlertCircle, RefreshCw, Volume2 } from 'lucide-react';
-import { submitReport, uploadPhoto } from '../api';
+import { submitReport, uploadPhoto, fetchLocations } from '../api';
 
 const SAMPLE_PRESETS = [
   {
@@ -64,8 +64,23 @@ export default function SupervisorPortal({ onReportSubmitted }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSubmissionResult, setLastSubmissionResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   const recognitionRef = useRef(null);
+
+  // Fetch dynamic WBS locations
+  useEffect(() => {
+    fetchLocations()
+      .then((data) => {
+        const list = Array.isArray(data) ? data : (data?.locations || []);
+        setLocations(list);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch locations:', err);
+        setLocations([]);
+      });
+  }, []);
 
   // Initialize Web Speech API
   useEffect(() => {
@@ -141,6 +156,7 @@ export default function SupervisorPortal({ onReportSubmitted }) {
     setLanguage(preset.lang);
     setRawText(preset.text);
     setReporterName(preset.reporter);
+    setSelectedLocation(preset.location || '');
     setErrorMsg('');
   };
 
@@ -173,12 +189,14 @@ export default function SupervisorPortal({ onReportSubmitted }) {
       const result = await submitReport({
         raw_text: rawText.trim(),
         language,
+        location: selectedLocation || null,
         reporter_name: reporterName.trim() || 'Site Supervisor',
         photo_url: photoUrl
       });
 
       setLastSubmissionResult(result);
       setRawText('');
+      setSelectedLocation('');
       setPhotoFile(null);
       setPhotoPreview(null);
       if (onReportSubmitted) onReportSubmitted(result);
@@ -219,8 +237,8 @@ export default function SupervisorPortal({ onReportSubmitted }) {
         {/* Main Reporting Form (Mobile-first feel) */}
         <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl relative">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Reporter and Language Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Reporter, Language, and Location Row */}
+            <div className={`grid grid-cols-1 ${locations.length > 0 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-4`}>
               <div>
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
                   Supervisor Name / Role
@@ -252,6 +270,26 @@ export default function SupervisorPortal({ onReportSubmitted }) {
                   <option value="Ambiguous / Informal">Ambiguous Observation</option>
                 </select>
               </div>
+
+              {locations.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    Location / Zone
+                  </label>
+                  <select
+                    value={selectedLocation}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+                  >
+                    <option value="">All Locations / Unspecified</option>
+                    {locations.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Input Text Area with Speech-to-Text Button */}
@@ -370,6 +408,12 @@ export default function SupervisorPortal({ onReportSubmitted }) {
               <p className="text-xs text-slate-300">
                 <strong className="text-white">Normalized Intent:</strong> {lastSubmissionResult.normalized_text}
               </p>
+              {lastSubmissionResult.location && (
+                <p className="text-xs text-slate-300">
+                  <strong className="text-white">Location / Zone:</strong>{' '}
+                  <span className="text-sky-300 font-semibold">📍 {lastSubmissionResult.location}</span>
+                </p>
+              )}
               {lastSubmissionResult.candidates?.[0] && (
                 <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
                   <span className="text-sky-400 font-mono font-bold mr-2">

@@ -5,6 +5,7 @@ class WBSActivityBase(BaseModel):
     code: str
     name: str
     discipline: str
+    location: Optional[str] = None
     wbs_level: int = 5
     parent_code: Optional[str] = None
     planned_start: Optional[str] = None
@@ -26,6 +27,7 @@ class MatchCandidateResponse(BaseModel):
     wbs_code: str
     wbs_name: str
     wbs_discipline: str
+    location: Optional[str] = None
     confidence_score: float
     rank: int
     reasoning: Optional[str] = None
@@ -34,6 +36,7 @@ class MatchCandidateResponse(BaseModel):
 class ReportCreate(BaseModel):
     raw_text: str
     language: Optional[str] = "English"
+    location: Optional[str] = None
     reporter_name: Optional[str] = "Field Supervisor"
     photo_url: Optional[str] = None
 
@@ -41,6 +44,7 @@ class ReportResponse(BaseModel):
     id: int
     reporter_name: Optional[str] = None
     language: str = "English"
+    location: Optional[str] = None
     raw_text: str
     normalized_text: Optional[str] = None
     extracted_intent: Optional[Dict[str, Any]] = None

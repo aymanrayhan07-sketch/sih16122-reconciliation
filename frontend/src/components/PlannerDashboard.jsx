@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle2, AlertTriangle, XCircle, ArrowRight, ShieldCheck, 
-  HelpCircle, Eye, Sliders, MessageSquare, Image, RefreshCw, Check
+  HelpCircle, Eye, Sliders, MessageSquare, Image, RefreshCw, Check, MapPin
 } from 'lucide-react';
-import { fetchPendingReports, reconcileReport } from '../api';
+import { fetchPendingReports, reconcileReport, fetchLocations } from '../api';
 
 export default function PlannerDashboard({ onReconciled }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL'); // ALL, AUTO, AMBIGUOUS
+  const [locations, setLocations] = useState([]);
+  const [locationFilter, setLocationFilter] = useState('ALL');
   const [selectedCandidates, setSelectedCandidates] = useState({});
   const [progressAdjustments, setProgressAdjustments] = useState({});
   const [plannerNotes, setPlannerNotes] = useState({});
@@ -43,6 +45,9 @@ export default function PlannerDashboard({ onReconciled }) {
 
   useEffect(() => {
     loadPendingReports();
+    fetchLocations()
+      .then((data) => setLocations(data.locations || []))
+      .catch((err) => console.error('Failed to load locations', err));
   }, []);
 
   const handleReconcile = async (reportId, action = 'APPROVE') => {
@@ -70,8 +75,9 @@ export default function PlannerDashboard({ onReconciled }) {
   };
 
   const filteredReports = reports.filter(r => {
-    if (filter === 'AUTO') return r.top_confidence >= 85;
-    if (filter === 'AMBIGUOUS') return r.top_confidence < 85;
+    if (filter === 'AUTO' && r.top_confidence < 85) return false;
+    if (filter === 'AMBIGUOUS' && r.top_confidence >= 85) return false;
+    if (locationFilter !== 'ALL' && r.location !== locationFilter) return false;
     return true;
   });
 
@@ -96,40 +102,66 @@ export default function PlannerDashboard({ onReconciled }) {
           </div>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 self-start md:self-auto">
-          <button
-            onClick={() => setFilter('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-              filter === 'ALL' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            All Pending ({reports.length})
-          </button>
-          <button
-            onClick={() => setFilter('AUTO')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1 ${
-              filter === 'AUTO' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-emerald-400'
-            }`}
-          >
-            <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-            <span>Auto-Suggest (≥85%)</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-950 text-emerald-200">
-              {autoCount}
-            </span>
-          </button>
-          <button
-            onClick={() => setFilter('AMBIGUOUS')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1 ${
-              filter === 'AMBIGUOUS' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-amber-400'
-            }`}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 mr-1" />
-            <span>Ambiguous (&lt;85%)</span>
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-950 text-amber-200">
-              {ambiguousCount}
-            </span>
-          </button>
+        {/* Filter Controls: Location Dropdown + Status Pills */}
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+          {locations.length > 0 && (
+            <div className="flex items-center space-x-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+              <MapPin className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <select
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer"
+              >
+                <option value="ALL" className="bg-slate-900 text-slate-200">
+                  All Locations ({reports.length})
+                </option>
+                {locations.map((loc) => {
+                  const count = reports.filter((r) => r.location === loc).length;
+                  return (
+                    <option key={loc} value={loc} className="bg-slate-900 text-slate-200">
+                      {loc} ({count})
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+
+          {/* Filter Pills */}
+          <div className="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+            <button
+              onClick={() => setFilter('ALL')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                filter === 'ALL' ? 'bg-sky-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              All Pending ({reports.length})
+            </button>
+            <button
+              onClick={() => setFilter('AUTO')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1 ${
+                filter === 'AUTO' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-emerald-400'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+              <span>Auto-Suggest (≥85%)</span>
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-950 text-emerald-200">
+                {autoCount}
+              </span>
+            </button>
+            <button
+              onClick={() => setFilter('AMBIGUOUS')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1 ${
+                filter === 'AMBIGUOUS' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-amber-400'
+              }`}
+            >
+              <AlertTriangle className="w-3.5 h-3.5 mr-1" />
+              <span>Ambiguous (&lt;85%)</span>
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-950 text-amber-200">
+                {ambiguousCount}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -175,6 +207,12 @@ export default function PlannerDashboard({ onReconciled }) {
                     <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
                       {report.language}
                     </span>
+                    {report.location && (
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30 flex items-center gap-1 font-medium">
+                        <MapPin className="w-3 h-3 text-sky-400" />
+                        <span>{report.location}</span>
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center space-x-3">
                     <span className="text-xs text-slate-400">{report.created_at}</span>
@@ -286,7 +324,7 @@ export default function PlannerDashboard({ onReconciled }) {
                               />
                             </div>
                             <div>
-                              <div className="flex items-center space-x-2">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-xs font-mono font-bold text-sky-400">
                                   {candidate.wbs_code}
                                 </span>
@@ -296,6 +334,12 @@ export default function PlannerDashboard({ onReconciled }) {
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
                                   {candidate.wbs_discipline}
                                 </span>
+                                {candidate.location && (
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-sky-300 border border-sky-500/30 flex items-center gap-1 font-medium">
+                                    <MapPin className="w-2.5 h-2.5 text-sky-400" />
+                                    <span>Zone: {candidate.location}</span>
+                                  </span>
+                                )}
                                 {isRank1 && (
                                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
                                     AI Rank #1

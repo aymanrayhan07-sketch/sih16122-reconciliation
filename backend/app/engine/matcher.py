@@ -77,12 +77,31 @@ class WBSScheduleMatcher:
         intersection = q_tokens.intersection(t_tokens)
         return len(intersection) / max(len(q_tokens), 1)
 
-    def match_report(self, raw_text: str, normalized_text: str, extracted_intent: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def match_report(self, raw_text: str, normalized_text: str = "", extracted_intent: Optional[Dict[str, Any]] = None, location: Optional[str] = None) -> List[Dict[str, Any]]:
         """
-        Calculates confidence scores for all WBS activities and returns the top 3 matches.
+        Calculates confidence scores for WBS activities and returns the top 3 matches.
+        If a location is specified and matching activities exist, narrows candidate pool first.
         """
         if not self.activities or self.tfidf_matrix is None:
             return []
+
+        if extracted_intent is None:
+            extracted_intent = {}
+        if not normalized_text:
+            normalized_text = raw_text
+
+        # Determine candidate pool indices (narrow by location if specified and found)
+        candidate_indices = list(range(len(self.activities)))
+        location_applied = False
+        if location and location.strip():
+            loc_clean = location.strip().lower()
+            matching_indices = [
+                i for i, act in enumerate(self.activities)
+                if act.get("location") and act["location"].strip().lower() == loc_clean
+            ]
+            if matching_indices:
+                candidate_indices = matching_indices
+                location_applied = True
 
         # 1. TF-IDF subword cosine similarity
         query_text = f"{normalized_text} {raw_text}"
@@ -106,7 +125,8 @@ class WBSScheduleMatcher:
         detected_tags = extracted_intent.get("equipment_tags", [])
         
         candidates = []
-        for idx, act in enumerate(self.activities):
+        for idx in candidate_indices:
+            act = self.activities[idx]
             act_code = act["code"]
             act_name = act["name"]
             act_disc = act["discipline"]
@@ -163,6 +183,8 @@ class WBSScheduleMatcher:
 
             # Build explainable reasoning
             reasons = []
+            if location_applied and act.get("location"):
+                reasons.append(f"Zone filtered: {act.get('location')}")
             if tag_bonus > 0:
                 reasons.append(f"Tag match ({', '.join(detected_tags)})")
             if target_discipline and target_discipline.lower() == act_disc.lower():
@@ -181,6 +203,7 @@ class WBSScheduleMatcher:
                 "wbs_code": act_code,
                 "wbs_name": act_name,
                 "wbs_discipline": act_disc,
+                "location": act.get("location"),
                 "confidence_score": confidence_pct,
                 "reasoning": reason_str,
             })

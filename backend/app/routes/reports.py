@@ -59,27 +59,33 @@ def submit_supervisor_report(report_in: ReportCreate, db: sqlite3.Connection = D
     normalized_text, extracted_intent = normalize_field_text(report_in.raw_text)
 
     # 2. Query all WBS activities
-    cursor.execute("SELECT id, code, name, discipline, wbs_level FROM wbs_activities")
+    cursor.execute("SELECT id, code, name, discipline, location, wbs_level FROM wbs_activities")
     wbs_rows = cursor.fetchall()
     activities = [dict(r) for r in wbs_rows]
 
     if not activities:
         raise HTTPException(status_code=400, detail="WBS schedule is empty. Please reset or import WBS first.")
 
-    # 3. Run semantic AI matching engine
+    # 3. Run semantic AI matching engine (passing location for optional narrowing)
     matcher = WBSScheduleMatcher(activities, threshold=CONFIDENCE_THRESHOLD)
-    top_candidates = matcher.match_report(report_in.raw_text, normalized_text, extracted_intent)
+    top_candidates = matcher.match_report(
+        report_in.raw_text,
+        normalized_text,
+        extracted_intent,
+        location=report_in.location
+    )
 
     # 4. Insert report record
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cursor.execute("""
         INSERT INTO reports (
-            reporter_name, language, raw_text, normalized_text,
+            reporter_name, language, location, raw_text, normalized_text,
             extracted_intent, photo_url, status, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING', ?)
     """, (
         report_in.reporter_name,
         report_in.language,
+        report_in.location,
         report_in.raw_text,
         normalized_text,
         json.dumps(extracted_intent),

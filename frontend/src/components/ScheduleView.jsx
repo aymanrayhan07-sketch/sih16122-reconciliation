@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Download, Filter, Activity, CheckCircle, Clock, AlertCircle, RefreshCw } from 'lucide-react';
-import { fetchWBS } from '../api';
+import { Search, Download, Filter, Activity, CheckCircle, Clock, AlertCircle, RefreshCw, MapPin } from 'lucide-react';
+import { fetchWBS, fetchLocations } from '../api';
 
 const DISCIPLINES = ['All', 'Civil', 'Piping', 'Electrical', 'Instrumentation', 'HSE'];
 const STATUSES = ['All', 'NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'];
@@ -10,12 +10,20 @@ export default function ScheduleView() {
   const [loading, setLoading] = useState(true);
   const [discipline, setDiscipline] = useState('All');
   const [status, setStatus] = useState('All');
+  const [location, setLocation] = useState('All');
+  const [locations, setLocations] = useState([]);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    fetchLocations()
+      .then((data) => setLocations(data.locations || []))
+      .catch((err) => console.error('Failed to load locations', err));
+  }, []);
 
   const loadActivities = async () => {
     setLoading(true);
     try {
-      const data = await fetchWBS({ discipline, status, search });
+      const data = await fetchWBS({ discipline, status, search, location });
       setActivities(data);
     } catch (err) {
       console.error(err);
@@ -26,7 +34,7 @@ export default function ScheduleView() {
 
   useEffect(() => {
     loadActivities();
-  }, [discipline, status, search]);
+  }, [discipline, status, search, location]);
 
   const getDisciplineBadge = (disc) => {
     const map = {
@@ -125,6 +133,19 @@ export default function ScheduleView() {
             />
           </div>
 
+          {locations.length > 0 && (
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-sky-500"
+            >
+              <option value="All">All Locations</option>
+              {locations.map(loc => (
+                <option key={loc} value={loc}>{loc}</option>
+              ))}
+            </select>
+          )}
+
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -146,6 +167,7 @@ export default function ScheduleView() {
                 <th className="px-5 py-3.5">Activity ID</th>
                 <th className="px-5 py-3.5">Description</th>
                 <th className="px-4 py-3.5">Discipline</th>
+                <th className="px-4 py-3.5">Location / Zone</th>
                 <th className="px-3 py-3.5 text-center">WBS Lvl</th>
                 <th className="px-4 py-3.5">Planned Dates</th>
                 <th className="px-5 py-3.5">Progress %</th>
@@ -156,14 +178,14 @@ export default function ScheduleView() {
             <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan="8" className="py-12 text-center text-slate-400">
+                  <td colSpan="9" className="py-12 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-500" />
                     Loading baseline schedule...
                   </td>
                 </tr>
               ) : activities.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="py-10 text-center text-slate-400">
+                  <td colSpan="9" className="py-10 text-center text-slate-400">
                     No activities found matching criteria.
                   </td>
                 </tr>
@@ -180,6 +202,16 @@ export default function ScheduleView() {
                       <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${getDisciplineBadge(act.discipline)}`}>
                         {act.discipline}
                       </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-300">
+                      {act.location ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[11px] px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700 text-sky-300">
+                          <MapPin className="w-2.5 h-2.5 text-sky-400 shrink-0" />
+                          <span>{act.location}</span>
+                        </span>
+                      ) : (
+                        <span className="text-slate-600 font-mono">—</span>
+                      )}
                     </td>
                     <td className="px-3 py-3.5 text-center font-mono text-slate-400">
                       L{act.wbs_level}
