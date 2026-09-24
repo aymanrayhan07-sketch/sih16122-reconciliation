@@ -205,7 +205,7 @@ export default function ProgressCharts() {
                       {h.wbs_name}
                     </td>
                     <td className="px-4 py-3 text-slate-300">
-                      {h.reporter_name || 'Supervisor'}
+                      {h.reporter_name || 'Field Reporter'}
                     </td>
                     <td className="px-3 py-3 text-center font-mono text-slate-400">
                       {h.previous_percent}%

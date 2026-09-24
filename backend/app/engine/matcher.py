@@ -12,7 +12,7 @@ from difflib import SequenceMatcher
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from ..config import CONFIDENCE_THRESHOLD
+from ..config import CONFIDENCE_THRESHOLD, EMBEDDING_MODEL_NAME
 
 # Optional dense sentence transformer model (graceful fallback)
 _dense_model = None
@@ -25,11 +25,11 @@ def get_dense_model():
         try:
             from sentence_transformers import SentenceTransformer
             # Prioritize local cached files so it never hangs on stage without Wi-Fi
-            _dense_model = SentenceTransformer("all-MiniLM-L6-v2", local_files_only=True)
+            _dense_model = SentenceTransformer(EMBEDDING_MODEL_NAME, local_files_only=True)
         except Exception:
             try:
                 from sentence_transformers import SentenceTransformer
-                _dense_model = SentenceTransformer("all-MiniLM-L6-v2")
+                _dense_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
             except Exception:
                 # Fall back to high-precision TF-IDF + tag matching engine
                 _dense_model = None

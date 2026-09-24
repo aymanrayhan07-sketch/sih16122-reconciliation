@@ -105,7 +105,7 @@ export default function FeedbackLog() {
               <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="px-4 py-3">Timestamp</th>
-                  <th className="px-4 py-3">Supervisor Field Phrase</th>
+                  <th className="px-4 py-3">Field Observation Phrase</th>
                   <th className="px-4 py-3">AI Top Suggestion</th>
                   <th className="px-4 py-3">Planner Chosen Activity</th>
                   <th className="px-3 py-3 text-center">Action</th>

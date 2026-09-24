@@ -169,14 +169,14 @@ export default function PlannerDashboard({ onReconciled }) {
       {loading ? (
         <div className="py-20 text-center text-slate-400 flex flex-col items-center justify-center">
           <RefreshCw className="w-8 h-8 animate-spin text-sky-500 mb-3" />
-          <p className="text-sm font-medium">Loading incoming supervisor reports...</p>
+          <p className="text-sm font-medium">Loading incoming field reports...</p>
         </div>
       ) : filteredReports.length === 0 ? (
         <div className="py-16 text-center bg-slate-900 border border-slate-800 rounded-2xl p-8">
           <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
           <h2 className="text-lg font-bold text-white">All Clear! Queue Reconciled</h2>
           <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-            There are no pending supervisor reports matching this filter. Switch to the Field Supervisor portal to submit new progress notes.
+            There are no pending field reports matching this filter. Switch to the Submit Report portal to submit new progress notes.
           </p>
         </div>
       ) : (
@@ -232,7 +232,7 @@ export default function PlannerDashboard({ onReconciled }) {
                 <div className="my-4 grid grid-cols-1 md:grid-cols-12 gap-4">
                   <div className="md:col-span-6 bg-slate-950/70 p-4 rounded-xl border border-slate-800">
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                      Raw Supervisor Voice / Message:
+                      Raw Field Observation / Voice Message:
                     </div>
                     <p className="text-sm text-slate-100 font-medium italic">
                       "{report.raw_text}"

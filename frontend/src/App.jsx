@@ -6,13 +6,33 @@ import ScheduleView from './components/ScheduleView';
 import ProgressCharts from './components/ProgressCharts';
 import FeedbackLog from './components/FeedbackLog';
 import ImportModal from './components/ImportModal';
+import RoleSelectModal, { ROLE_CONFIG, ROLES } from './components/RoleSelectModal';
 import { fetchPendingReports, resetWBS, seedDemoReports } from './api';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('planner');
+  const [currentRole, setCurrentRole] = useState(() => {
+    return sessionStorage.getItem('sih16122_role') || ROLES.SUPERVISOR;
+  });
+  const [showRoleModal, setShowRoleModal] = useState(() => {
+    return !sessionStorage.getItem('sih16122_role_chosen');
+  });
+
+  const roleConfig = ROLE_CONFIG[currentRole] || ROLE_CONFIG[ROLES.SUPERVISOR];
+  const [activeTab, setActiveTab] = useState(() => roleConfig.defaultTab);
   const [pendingCount, setPendingCount] = useState(0);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [resetting, setResetting] = useState(false);
+
+  const handleRoleChange = (newRole) => {
+    if (!ROLE_CONFIG[newRole]) return;
+    setCurrentRole(newRole);
+    sessionStorage.setItem('sih16122_role', newRole);
+    sessionStorage.setItem('sih16122_role_chosen', 'true');
+    const targetConfig = ROLE_CONFIG[newRole];
+    if (!targetConfig.allowedTabs.includes(activeTab)) {
+      setActiveTab(targetConfig.defaultTab);
+    }
+  };
 
   const refreshPendingCount = async () => {
     try {
@@ -45,8 +65,21 @@ export default function App() {
     }
   };
 
+  const allowedTabs = roleConfig.allowedTabs;
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      {/* Role Selection Modal (Welcome / Switcher) */}
+      <RoleSelectModal
+        isOpen={showRoleModal}
+        onClose={() => {
+          sessionStorage.setItem('sih16122_role_chosen', 'true');
+          setShowRoleModal(false);
+        }}
+        currentRole={currentRole}
+        onSelectRole={handleRoleChange}
+      />
+
       {/* Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -54,27 +87,33 @@ export default function App() {
         pendingCount={pendingCount}
         onResetDemo={handleResetDemo}
         onOpenImport={() => setIsImportOpen(true)}
+        currentRole={currentRole}
+        onRoleChange={handleRoleChange}
+        onOpenRoleModal={() => setShowRoleModal(true)}
+        allowedTabs={allowedTabs}
+        canImportReset={roleConfig.canImportReset}
       />
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {activeTab === 'supervisor' && (
+        {(activeTab === 'submit' || activeTab === 'supervisor') && allowedTabs.includes('submit') && (
           <SupervisorPortal
+            currentRole={currentRole}
             onReportSubmitted={() => {
               refreshPendingCount();
             }}
           />
         )}
-        {activeTab === 'planner' && (
+        {activeTab === 'planner' && allowedTabs.includes('planner') && (
           <PlannerDashboard
             onReconciled={() => {
               refreshPendingCount();
             }}
           />
         )}
-        {activeTab === 'schedule' && <ScheduleView />}
-        {activeTab === 'analytics' && <ProgressCharts />}
-        {activeTab === 'feedback' && <FeedbackLog />}
+        {activeTab === 'schedule' && allowedTabs.includes('schedule') && <ScheduleView />}
+        {activeTab === 'analytics' && allowedTabs.includes('analytics') && <ProgressCharts />}
+        {activeTab === 'feedback' && allowedTabs.includes('feedback') && <FeedbackLog />}
       </main>
 
       {/* CSV Import Modal */}

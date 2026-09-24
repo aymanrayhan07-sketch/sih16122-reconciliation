@@ -53,9 +53,23 @@ const SAMPLE_PRESETS = [
   }
 ];
 
-export default function SupervisorPortal({ onReportSubmitted }) {
-  const [reporterName, setReporterName] = useState('Rao (Piping Lead)');
+export default function SupervisorPortal({ onReportSubmitted, currentRole = 'Supervisor' }) {
+  const [reporterName, setReporterName] = useState(() => {
+    if (currentRole === 'Foreman') return 'Rao (Piping Foreman)';
+    if (currentRole === 'Civil Engineer') return 'Sharma (Civil Engineer)';
+    return 'Vikram (Civil Supervisor)';
+  });
   const [language, setLanguage] = useState('Telugu');
+
+  useEffect(() => {
+    if (currentRole === 'Foreman') {
+      setReporterName('Rao (Piping Foreman)');
+    } else if (currentRole === 'Supervisor') {
+      setReporterName('Vikram (Civil Supervisor)');
+    } else if (currentRole === 'Civil Engineer') {
+      setReporterName('Sharma (Civil Engineer)');
+    }
+  }, [currentRole]);
   const [rawText, setRawText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(true);
@@ -217,7 +231,7 @@ export default function SupervisorPortal({ onReportSubmitted }) {
               <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400">
                 <Sparkles className="w-5 h-5" />
               </span>
-              <h1 className="text-xl font-bold text-white">Field Supervisor Daily Progress Portal</h1>
+              <h1 className="text-xl font-bold text-white">Daily Progress Reporting Portal</h1>
             </div>
             <p className="text-sm text-slate-400 mt-1">
               Speak or message informal field updates in any regional language (Telugu, Hindi, Tamil, Hinglish, or site slang).
@@ -241,14 +255,14 @@ export default function SupervisorPortal({ onReportSubmitted }) {
             <div className={`grid grid-cols-1 ${locations.length > 0 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-4`}>
               <div>
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                  Supervisor Name / Role
+                  Reporter Name / Role
                 </label>
                 <input
                   type="text"
                   value={reporterName}
                   onChange={(e) => setReporterName(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-                  placeholder="e.g. Rao (Piping Lead)"
+                  placeholder="e.g. Rao (Piping Foreman)"
                 />
               </div>
 

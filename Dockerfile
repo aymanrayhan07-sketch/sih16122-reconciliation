@@ -40,10 +40,10 @@ RUN mkdir -p /app/backend/data /app/backend/uploads /app/cache && chmod -R 777 /
 ENV PYTHONUNBUFFERED=1
 ENV HF_HUB_OFFLINE=1
 ENV TRANSFORMERS_OFFLINE=1
-ENV PORT=7860
+ENV PORT=8000
 
 WORKDIR /app/backend
 
-EXPOSE 7860
+EXPOSE 8000
 
 CMD ["python", "run_backend.py"]

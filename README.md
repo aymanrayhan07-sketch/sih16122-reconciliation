@@ -1,12 +1,3 @@
----
-title: SIH16122 Construction Reconciliation
-emoji: 🏗️
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-app_port: 7860
----
-
 # 🏗️ SIH16122: AI-Powered Construction Progress Reconciliation System
 
 > **Reconciling Informal, Multilingual Field Observations (Voice/Text) to Primavera & MS Project WBS L5/L6 Baseline Schedules with Human-in-the-Loop Verification.**
