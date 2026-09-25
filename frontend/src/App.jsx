@@ -11,10 +11,10 @@ import { fetchPendingReports, resetWBS, seedDemoReports } from './api';
 
 export default function App() {
   const [currentRole, setCurrentRole] = useState(() => {
-    return sessionStorage.getItem('sih16122_role') || ROLES.SUPERVISOR;
+    return sessionStorage.getItem('sih26122_role') || ROLES.SUPERVISOR;
   });
   const [showRoleModal, setShowRoleModal] = useState(() => {
-    return !sessionStorage.getItem('sih16122_role_chosen');
+    return !sessionStorage.getItem('sih26122_role_chosen');
   });
 
   const roleConfig = ROLE_CONFIG[currentRole] || ROLE_CONFIG[ROLES.SUPERVISOR];
@@ -26,8 +26,8 @@ export default function App() {
   const handleRoleChange = (newRole) => {
     if (!ROLE_CONFIG[newRole]) return;
     setCurrentRole(newRole);
-    sessionStorage.setItem('sih16122_role', newRole);
-    sessionStorage.setItem('sih16122_role_chosen', 'true');
+    sessionStorage.setItem('sih26122_role', newRole);
+    sessionStorage.setItem('sih26122_role_chosen', 'true');
     const targetConfig = ROLE_CONFIG[newRole];
     if (!targetConfig.allowedTabs.includes(activeTab)) {
       setActiveTab(targetConfig.defaultTab);
@@ -73,7 +73,7 @@ export default function App() {
       <RoleSelectModal
         isOpen={showRoleModal}
         onClose={() => {
-          sessionStorage.setItem('sih16122_role_chosen', 'true');
+          sessionStorage.setItem('sih26122_role_chosen', 'true');
           setShowRoleModal(false);
         }}
         currentRole={currentRole}
@@ -130,7 +130,7 @@ export default function App() {
       <footer className="bg-slate-900/60 border-t border-slate-800/80 py-4 px-4 mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <div className="flex items-center space-x-2">
-            <span className="font-semibold text-slate-400">SIH16122 Prototype</span>
+            <span className="font-semibold text-slate-400">SIH26122 Prototype</span>
             <span>•</span>
             <span>AI-Powered Construction Progress Reconciliation</span>
           </div>

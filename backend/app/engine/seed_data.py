@@ -1,5 +1,5 @@
 """
-Seed Data Generator for SIH16122.
+Seed Data Generator for SIH26122.
 Generates realistic Primavera/MS Project WBS L5/L6 baseline activities
 across Civil, Piping, Electrical, Instrumentation, and HSE disciplines,
 plus sample multilingual supervisor reports.

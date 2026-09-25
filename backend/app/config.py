@@ -9,9 +9,9 @@ UPLOADS_DIR = BASE_DIR / "uploads"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
-DB_PATH = str(DATA_DIR / "sih16122.db")
+DB_PATH = str(DATA_DIR / "sih26122.db")
 
-# AI Confidence Threshold for SIH16122
+# AI Confidence Threshold for SIH26122
 # Matches >= 85.0% are auto-suggested for 1-click approval
 # Matches < 85.0% are flagged with an Ambiguous Match warning
 CONFIDENCE_THRESHOLD = 85.0

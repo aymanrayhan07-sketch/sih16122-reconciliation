@@ -451,7 +451,7 @@ export default function SupervisorPortal({ onReportSubmitted, currentRole = 'Sup
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 1-Click Demo Scenarios
               </h2>
-              <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">SIH16122 Test Pack</span>
+              <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">SIH26122 Test Pack</span>
             </div>
             <p className="text-xs text-slate-400 mb-4">
               Click any scenario to instantly load realistic multilingual field phrases and observe the AI matching performance:

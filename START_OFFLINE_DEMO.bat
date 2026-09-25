@@ -1,9 +1,9 @@
 @echo off
-title SIH16122 Offline Stage Demo Launcher
+title SIH26122 Offline Stage Demo Launcher
 color 0b
 
 echo ======================================================================
-echo   [SIH16122] AI Construction Progress Reconciliation System
+echo   [SIH26122] AI Construction Progress Reconciliation System
 echo   STAGE DEMO MODE: 100%% Local - Zero Internet Required
 echo ======================================================================
 echo.
@@ -15,10 +15,10 @@ set HF_HUB_OFFLINE=1
 set TRANSFORMERS_OFFLINE=1
 
 echo [1/3] Starting Local AI Backend (FastAPI + SQLite)...
-start "SIH16122 Backend" /min cmd /c "cd /d "%ROOT_DIR%backend" && python run_backend.py"
+start "SIH26122 Backend" /min cmd /c "cd /d "%ROOT_DIR%backend" && python run_backend.py"
 
 echo [2/3] Starting Local Frontend (React + Vite)...
-start "SIH16122 Frontend" /min cmd /c "cd /d "%ROOT_DIR%frontend" && npm.cmd run dev"
+start "SIH26122 Frontend" /min cmd /c "cd /d "%ROOT_DIR%frontend" && npm.cmd run dev"
 
 echo [3/3] Waiting for servers to initialize...
 timeout /t 3 /nobreak >nul
@@ -37,6 +37,6 @@ echo Press any key when you are done to stop all servers...
 pause >nul
 
 echo Stopping servers...
-taskkill /fi "WINDOWTITLE eq SIH16122 Backend*" /f >nul 2>&1
-taskkill /fi "WINDOWTITLE eq SIH16122 Frontend*" /f >nul 2>&1
+taskkill /fi "WINDOWTITLE eq SIH26122 Backend*" /f >nul 2>&1
+taskkill /fi "WINDOWTITLE eq SIH26122 Frontend*" /f >nul 2>&1
 echo Done.

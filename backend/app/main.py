@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
         pass
 
 app = FastAPI(
-    title="SIH16122 Construction Progress Reconciliation API",
+    title="SIH26122 Construction Progress Reconciliation API",
     description="AI-powered semantic matching of informal site reports to Primavera/MS Project WBS L5/L6 activities with human-in-the-loop review.",
     version="1.0.0",
     lifespan=lifespan
@@ -72,7 +72,7 @@ else:
     @app.get("/")
     def root():
         return {
-            "project": "SIH16122 AI-Powered Construction Progress Reconciliation System",
+            "project": "SIH26122 AI-Powered Construction Progress Reconciliation System",
             "status": "online",
             "documentation": "/docs"
         }

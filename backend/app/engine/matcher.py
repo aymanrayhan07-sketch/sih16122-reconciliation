@@ -1,5 +1,5 @@
 """
-AI Semantic Matching Engine for SIH16122.
+AI Semantic Matching Engine for SIH26122.
 Reconciles normalized supervisor reports against Primavera/MS Project WBS baseline activities.
 Combines subword TF-IDF n-grams, dense semantic vectors, domain equipment tag matching,
 and discipline gating to compute transparent confidence scores (0 - 100%).

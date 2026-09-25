@@ -1,4 +1,4 @@
-# 🏗️ SIH16122: AI-Powered Construction Progress Reconciliation System
+# 🏗️ SIH26122: AI-Powered Construction Progress Reconciliation System
 
 > **Reconciling Informal, Multilingual Field Observations (Voice/Text) to Primavera & MS Project WBS L5/L6 Baseline Schedules with Human-in-the-Loop Verification.**
 
@@ -77,7 +77,7 @@ flowchart TD
 ## 📂 Project Structure
 
 ```text
-sih16122-reconciliation/
+sih26122-reconciliation/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                # FastAPI app with CORS, lifespan auto-seeding
@@ -130,7 +130,7 @@ cd C:\Users\DELL\.gemini\antigravity\scratch\sih16122-reconciliation\backend
 python run_backend.py
 ```
 > The backend will start on **`http://127.0.0.1:8000`**.  
-> On first launch, it will automatically create `sih16122.db` and auto-seed **28 WBS activities** and **8 multilingual demo reports**.  
+> On first launch, it will automatically create `sih26122.db` and auto-seed **28 WBS activities** and **8 multilingual demo reports**.  
 > Interactive OpenAPI documentation is accessible at `http://127.0.0.1:8000/docs`.
 
 ### Step 2: Start Frontend (React + Vite)

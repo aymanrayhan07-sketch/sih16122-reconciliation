@@ -38,7 +38,7 @@ export default function Navbar({
                   ReconAI
                 </span>
                 <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-sky-500/20 text-sky-400 rounded-full border border-sky-500/30">
-                  SIH16122
+                  SIH26122
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">

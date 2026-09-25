@@ -1,5 +1,5 @@
 """
-Interactive Terminal CLI for Submitting Supervisor Reports (SIH16122).
+Interactive Terminal CLI for Submitting Supervisor Reports (SIH26122).
 Allows site supervisors or judges to submit progress updates directly from the command line.
 """
 
@@ -40,7 +40,7 @@ def submit_from_terminal(text: str, language: str = "English", reporter: str = "
         return
 
     print("\n" + "="*65)
-    print(" [SIH16122] AI RECONCILIATION RESULT")
+    print(" [SIH26122] AI RECONCILIATION RESULT")
     print("="*65)
     print(f" Report ID     : #{res['id']}")
     print(f" Reporter      : {res['reporter_name']} ({res['language']})")
@@ -73,7 +73,7 @@ def submit_from_terminal(text: str, language: str = "English", reporter: str = "
     print("="*65 + "\n")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Submit field progress report to SIH16122 AI Engine")
+    parser = argparse.ArgumentParser(description="Submit field progress report to SIH26122 AI Engine")
     parser.add_argument("text", nargs="?", help="Progress report text (e.g. '24 inch spool erection aipoyindi')")
     parser.add_argument("--lang", default="Regional / Slang", help="Language or dialect")
     parser.add_argument("--reporter", default="Field Supervisor", help="Supervisor name")
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         submit_from_terminal(args.text, args.lang, args.reporter)
     else:
         # Interactive mode
-        print("\n=== SIH16122 Field Report Terminal Ingestion ===")
+        print("\n=== SIH26122 Field Report Terminal Ingestion ===")
         print("Type your observation below (or Ctrl+C to exit):")
         try:
             user_text = input("\nEnter site observation: ").strip()

@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for SIH16122 Full-Stack Deployment
+# Multi-stage Dockerfile for SIH26122 Full-Stack Deployment
 # Stage 1: Build React Frontend
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app/frontend

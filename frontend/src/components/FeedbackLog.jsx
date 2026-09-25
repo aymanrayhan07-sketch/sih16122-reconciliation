@@ -34,7 +34,7 @@ export default function FeedbackLog() {
             <div>
               <h1 className="text-xl font-bold text-white">Institutional Memory & Feedback Log</h1>
               <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-                SIH16122 Core Differentiator: Capturing human-in-the-loop decisions. When planners override or confirm
+                SIH26122 Core Differentiator: Capturing human-in-the-loop decisions. When planners override or confirm
                 AI match candidates, the system logs the dialect mapping, building project-specific semantic memory for future baseline iterations.
               </p>
             </div>

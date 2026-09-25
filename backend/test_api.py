@@ -14,7 +14,7 @@ from app.models import ReportCreate
 from app.engine.matcher import WBSScheduleMatcher
 
 def run_tests():
-    print("=== STARTING SIH16122 LOCATION / ZONE RECONCILIATION TESTS ===")
+    print("=== STARTING SIH26122 LOCATION / ZONE RECONCILIATION TESTS ===")
 
     # 1. Initialize DB and reset baseline
     init_db()
